@@ -45,7 +45,7 @@ planetD0=1.0
 Tplanet = starT0*(Rstar/2.0/planetD0/autom)**(0.5)*(1.0-Alpha0)**(0.25)
 
 
-#Inner edge of habitable zone, where T=1000 degrees centrigrade (373.15K)
+#Inner edge of habitable zone, where T=100 degrees centigrade (373.15K)
 DistIn=0.5*Rstar/(((373.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
 
 #Outer edge of habitable zone, where T=0 degrees centigrade (273.15K)
@@ -79,8 +79,8 @@ ring=ax1.fill(np.ravel(xs), np.ravel(ys), color="green", alpha=0.5, linewidth=0.
 #update the plot as the slider(s) are updated
 def update(val):
     Rstar=1.0*rsol*(sstarT.val/5780.)**(0.5)
-    DistOut=0.5*Rstar/(((373.15/sstarT.val)**4/(1.0-sAlpha.val))**0.5)/autom
-    DistIn=0.5*Rstar/(((273.15/sstarT.val)**4/(1.0-sAlpha.val))**0.5)/autom    
+    DistIn=0.5*Rstar/(((373.15/sstarT.val)**4/(1.0-sAlpha.val))**0.5)/autom
+    DistOut=0.5*Rstar/(((273.15/sstarT.val)**4/(1.0-sAlpha.val))**0.5)/autom    
 
     ax1.cla()
     ax1.set_xlim(-5.5, 5.5)
