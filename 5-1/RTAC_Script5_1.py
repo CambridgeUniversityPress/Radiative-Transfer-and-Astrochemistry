@@ -1,7 +1,7 @@
 #
 # Script 5-1 for the textbook "Foundations of Radiative Transfer & Astrochemistry" 
 #
-# A simple script that plots the Boltzann distribution with and without statistical weights.
+# A simple script that plots the Boltmzann distribution with and without statistical weights.
 # Includes an interactive slider to modify the temperature
 #
 # data from LAMDA database (https://home.strw.leidenuniv.nl/~moldata/)
@@ -15,7 +15,7 @@ from matplotlib.widgets import Slider
 #Boltzmann constant
 kB = 1.38e-23
 
-levelsCO=np.arange(1,42,1)
+levelsCO=np.arange(0,41,1)
 
 #
 #energies are in cm^{-1} units in LAMDA database
@@ -27,7 +27,7 @@ energiesCO=[0.0, 3.845, 11.5350, 23.0695, 38.4481, 57.6704, 80.7354, 107.6424, 1
 gCO=[1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0,15.0,17.0,19.0,21.0, 23.0, 25.0, 27.0, 29.0, 31.0, 33.0, 35.0, 37.0, 39.0, 41.0, 43.0, 45.0, 47.0, 49.0, 51.0, 53.0, 55.0, 57.0, 59.0, 61.0, 63.0, 65.0, 67.0, 69.0, 71.0, 73.0, 75.0, 77.0, 79.0, 81.0]
 
 
-#Works out the partition function, including the statistical weights (degeneracty factors)
+#Works out the partition function, including the statistical weights (degeneracy factors)
 def calcPartitionFunction(energies, degeneracies, temperature):
     PartitionFunction = 0.0
     for i in range(0,len(energies)):

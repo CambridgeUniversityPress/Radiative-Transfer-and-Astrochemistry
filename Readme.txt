@@ -4,7 +4,7 @@ Scripts associated with the textbook "Foundations of Radiative Transfer & Astroc
 
 2-1: Optical Depth  
 
-2-2: A simle Ray Tracing Code  
+2-2: A simple Ray Tracing Code  
 
 3-1: A Monte Carlo Scattered Light Code  
 

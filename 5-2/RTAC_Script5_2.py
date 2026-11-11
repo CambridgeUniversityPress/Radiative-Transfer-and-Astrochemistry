@@ -1,5 +1,5 @@
 #
-# Script 5-1 for the textbook "Foundations of Radiative Transfer & Astrochemistry"
+# Script 5-2 for the textbook "Foundations of Radiative Transfer & Astrochemistry"
 # This script illustrates the extent of the habitable zone, defined as the region in which water is in liquid form
 # This is based on radiative equilibrium and ignores factors such as the greenhouse effect. 
 #
@@ -40,15 +40,16 @@ sstarT=Slider(axstarT, 'Stellar Temperature, K', starTMin, starTMax, valinit=sta
 sAlpha=Slider(axAlpha, 'Albedo, \u03B1', AlphaMin, AlphaMax, valinit=Alpha0, valstep=delta_Alpha)
 
 #set up the initial extent of the habitable zone 
-Rstar = 1.0*rsol
+Rstar=1.0*rsol*(sstarT.val/5780.)**(0.5)
 planetD0=1.0
 Tplanet = starT0*(Rstar/2.0/planetD0/autom)**(0.5)*(1.0-Alpha0)**(0.25)
 
-#Outer edge of habitable zone, where T=100 degrees centigrade (373.15K)
-DistOut=0.5*Rstar/(((373.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
 
-#Inner edge of habitable zone, where T=0 degrees centrigrate (273.15K)
-DistIn=0.5*Rstar/(((273.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
+#Inner edge of habitable zone, where T=0 degrees centrigrade (273.15K)
+DistIn=0.5*Rstar/(((373.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
+
+#Outer edge of habitable zone, where T=100 degrees centigrade (373.15K)
+DistOut=0.5*Rstar/(((273.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
 
 n, radii = 100, [DistIn, DistOut]
 theta = np.linspace(0, 2*np.pi, n, endpoint=True)
@@ -72,7 +73,8 @@ ax1.scatter(5.2,0.0, marker='o', s=50, color="red", label="Jupiter")
 ax1.legend(loc=3)
 
 #add the habitable zone ring in green
-ring=ax1.fill_between(np.ravel(xs), np.ravel(ys), color="green", alpha=0.5, linewidth=0.0)
+
+ring=ax1.fill(np.ravel(xs), np.ravel(ys), color="green", alpha=0.5, linewidth=0.0)
 
 #update the plot as the slider(s) are updated
 def update(val):

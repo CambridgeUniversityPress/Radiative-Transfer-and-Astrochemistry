@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from matplotlib.patches import Rectangle
 
-#case B recombination coefficient in m^3/s )
+#case B recombination coefficient in m^3/s
 alphaB = 2.6e-19
 
 #maximum number of layers
@@ -45,7 +45,7 @@ def ionisedThickness(phi, n, D):
         #the whole layer is ionised and the leftover photons carry on
         return D, phi - needed
     else:
-        #only part of the layer is ionised (equation 9.x) and no photons get through
+        #only part of the layer is ionised and no photons get through
         return phi / (n**2 * alphaB) / pc, 0.0
 
 

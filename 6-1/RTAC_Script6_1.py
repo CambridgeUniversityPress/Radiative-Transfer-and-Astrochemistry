@@ -16,11 +16,11 @@ import matplotlib.colors as colors
 
 
 #this is the initial dataset that will be plotted
-cube40="intensity_dusttest.fits"
+cube70="intensity_dusttest.fits"
 
 #open the fits cube
-cube40_hdu_list = fits.open(cube40)
-cube40_image_data = cube40_hdu_list[0].data
+cube70_hdu_list = fits.open(cube70)
+cube70_image_data = cube70_hdu_list[0].data
 
 fig, (ax1,ax2) = plt.subplots(1,2,figsize=(8,7))
 #plt.subplots_adjust(left=0.25, bottom=0.35)
@@ -41,13 +41,13 @@ vel0 = 0.0
 incMin=0.0
 incMax=90.0
 delta_inc=10.0
-inc0=40.0
+inc0=70.0
 
 #set up the sliders
 svel=Slider(axvel, 'Velocity, km/s', velMin, velMax, valinit=vel0, valstep=delta_vel)
 sinc=Slider(axinc, 'Inclination, degrees', incMin, incMax, valinit=inc0, valstep=delta_inc)
 
-ax1.imshow(cube40_image_data[40,:,:], norm=colors.LogNorm())
+ax1.imshow(cube70_image_data[40,:,:], norm=colors.LogNorm())
 ax1.set_ylabel("")
 ax1.set_xlabel("")
 ax1.set_title("CO channel map, v = %.1f km/s" % vel0)
@@ -58,12 +58,12 @@ lineProf=np.zeros(80)
 vel=np.zeros(80)
 for i in range(0,80):
     #This is doing a crude continuum subtraction by subtracting the emission in a ~line free channel
-    lineProf[i]=np.sum(cube40_image_data[i,:,:])-np.sum(cube40_image_data[2,:,:])
+    lineProf[i]=np.sum(cube70_image_data[i,:,:])-np.sum(cube70_image_data[2,:,:])
     vel[i]=-5.0+delta_vel*i
 lineProf[:]=lineProf[:]/max(lineProf[:])
 ax2.set_ylim(0.25, 1.1)    
 ax2.set_xlim(-4.9, 4.9)    
-ax2.set_xlabel("velocity")
+ax2.set_xlabel("velocity, km/s")
 ax2.set_ylabel("Normalised intensity")
 ax2.plot(vel, lineProf)
 
@@ -75,8 +75,7 @@ def update(val):
     fileString="intensity_dusttest_"+str(incInt)+".fits"
     cube_hdu_list = fits.open(fileString)
     cube_image_data = cube_hdu_list[0].data
-#    index = int( (velMin + svel.val)/delta_vel)
-    index = int( (svel.val-velMin)/delta_vel)
+    index = min(int( (svel.val-velMin)/delta_vel), 79)
     ax1.imshow(cube_image_data[index,:,:], norm=colors.LogNorm())
     ax1.set_ylabel("")
     ax1.set_xlabel("")
@@ -88,8 +87,8 @@ def update(val):
     lineProf[:]=lineProf[:]/max(lineProf[:])
     ax2.set_ylim(0.25, 1.1)
     ax2.set_xlim(-4.9, 4.9)    
-    ax2.set_xlabel("velocity")
-    ax2.set_ylabel("I")
+    ax2.set_xlabel("Velocity, km/s")
+    ax2.set_ylabel("Normalised intensity")
     ax1.set_title("CO channel map, v = %.1f km/s" % svel.val)
     ax2.set_title("Spatially unresolved line profile")
     ax2.plot(vel, lineProf)

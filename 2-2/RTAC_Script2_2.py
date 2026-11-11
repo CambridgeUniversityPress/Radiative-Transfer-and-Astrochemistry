@@ -99,8 +99,8 @@ iArray=TraceRaysToObserver(xcoord, ycoord, zcoord, density, T, freq, ncells, dL)
 #lets also compare a cut along the mid-plane with the analytic solution
 analyticEmissivity=freefreeEmissivity(10., 1.e4, freq)
 analytic=np.zeros(len(xcoord))
-for i in range(0, len(xcoord)-1):
-    if((xcoord[i]**2)**0.5< 1.0):        
+for i in range(0, len(xcoord)):
+    if((xcoord[i]**2)**0.5< sphereRadius):        
         analytic[i]=2.0*analyticEmissivity*sphereRadius*(1.0-(xcoord[i]**2)/(sphereRadius**2))**0.5
 
 maxval=np.amax(analytic)
