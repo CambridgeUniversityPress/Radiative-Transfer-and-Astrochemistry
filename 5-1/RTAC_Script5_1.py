@@ -1,7 +1,7 @@
 #
 # Script 5-1 for the textbook "Foundations of Radiative Transfer & Astrochemistry" 
 #
-# A simple script that plots the Boltmzann distribution with and without statistical weights.
+# A simple script that plots the Boltzmann distribution with and without statistical weights.
 # Includes an interactive slider to modify the temperature
 #
 # data from LAMDA database (https://home.strw.leidenuniv.nl/~moldata/)
