@@ -1,20 +1,12 @@
 #
-# Ray trace through a cloud 
-#
-# User can change the density distribution of the cloud
-# Code will update an image of the cloud and plot the brightness profile compared to that of a uniform cloud
-#
-# To make it faster, maybe just trace for a quadrant and map the solution onto other quadrants...
-# Or perhaps just do a quadrant and plot it 4 times... These would only work if the number of cells is even though 
-#
-#
-#
-# Written by T J Haworth October 2020
-#
-#
+# Script 2-2 for the textbook "Foundations of Radiative Transfer & Astrochemistry"
+# This script is a simple ray tracing code for the example of an optically thin emitting sphere. 
+# The script includes a slider allowing the user to change the grid resolution and the density 
+# structure of the sphere. 
 #
 
 
+#load libraries
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -34,7 +26,7 @@ def setupGrid(index, sphereRadius, ncells):
 #size of a cell for ncells is dL
     dL = (2.4*sphereRadius)/float(ncells)
 
-#set up some coordinate arrays (x,y,z) andd some empty density/temperature arrays    
+#set up some coordinate arrays (x,y,z) and some empty density/temperature arrays    
     x=np.arange(-1.2*sphereRadius, 1.2*sphereRadius, dL)
     y=np.arange(-1.2*sphereRadius, 1.2*sphereRadius, dL)
     z=np.arange(-1.2*sphereRadius, 1.2*sphereRadius, dL)
@@ -48,7 +40,7 @@ def setupGrid(index, sphereRadius, ncells):
                 thisR=(x[i]**2+y[j]**2+z[k]**2)**0.5
                 if thisR <= sphereRadius:
                     #inside the sphere
-                    rho[i,j,k]=10.0*(0.001+thisR/sphereRadius)**(index) #density profile scales with radius to the power of sme index
+                    rho[i,j,k]=10.0*(0.001+thisR/sphereRadius)**(index) #density profile scales with radius to the power of some index
                     Temperature[i,j,k]=1.e4 #Temperature in K, this is ionised gas
                 else:
                     #outside the sphere
@@ -57,7 +49,7 @@ def setupGrid(index, sphereRadius, ncells):
     return x, y, z, rho, Temperature, dL
 
 
-#return free-free Bremmstrahlung emissivity for a given density and temperature
+#return free-free Bremsstrahlung emissivity for a given density and temperature
 def freefreeEmissivity(thisRho, thisT, freq):
     thisAlpkk = 1.0
     eta= thisRho**2*thisAlpkk*np.exp(-hConst*freq/kB/thisT)*(2.0*hConst*freq**3/c**2)
@@ -70,7 +62,7 @@ def getKappa(density):
     return Kappa
     
 #routine to do the ray tracing
-def TraceRaysToObserver(pixIDx, pixIDy, pixIDz, density, temperature, freq, ncells):
+def TraceRaysToObserver(pixIDx, pixIDy, pixIDz, density, temperature, freq, ncells, dL):
     #set up the intensity array with zero everywhere. 
     intensity = np.zeros(shape=(int(ncells),int(ncells)))
     #loop over x/y and trace a ray through z to work out the total intensity in each cell
@@ -101,7 +93,7 @@ print("Emission times volume ", EmissionTimesVolume)
 xcoord, ycoord, zcoord, density, T, dL=setupGrid(0.0, sphereRadius, ncells)
 
 #do the ray tracing
-iArray=TraceRaysToObserver(xcoord, ycoord, zcoord, density, T, freq, ncells)
+iArray=TraceRaysToObserver(xcoord, ycoord, zcoord, density, T, freq, ncells, dL)
 
 
 #lets also compare a cut along the mid-plane with the analytic solution
@@ -144,7 +136,6 @@ ax1.set_ylabel("")
 toplot=ax1.pcolor(xcoord, ycoord, iArray)
 ax1.set_xlim(-1.15,1.15)
 ax1.set_ylim(-1.15,1.15)
-ax1.set_aspect=2.0
 #cbar_ax = fig.add_axes()
 cb=plt.colorbar(toplot, ax=[ax1], location='left')
 
@@ -159,7 +150,7 @@ def update(val):
     #setup the grid
     xcoord, ycoord, zcoord, density, T, dL=setupGrid(spow.val, sphereRadius, spix.val)
     #do the ray tracing
-    iArray=TraceRaysToObserver(xcoord, ycoord, zcoord, density, T, freq, spix.val)
+    iArray=TraceRaysToObserver(xcoord, ycoord, zcoord, density, T, freq, spix.val, dL)
     profile.set_xdata(xcoord)
     profile.set_ydata(iArray[:,int(spix.val/2)])
     toplot=ax1.pcolor(xcoord, ycoord, iArray)

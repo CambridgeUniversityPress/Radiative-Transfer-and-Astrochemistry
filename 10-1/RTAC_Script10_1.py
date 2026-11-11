@@ -1,8 +1,10 @@
 #
-# This python script solves for the position, mass, radius and mass loss rate of an externally irradiated globule. 
-# T. J. Haworth. 
-#
+# Script 10-1 for the textbook "Foundations of Radiative Transfer & Astrochemistry"
+# This python script solves for the position, mass, radius and mass loss rate of an
+# externally irradiated globule over time
+# 
 
+#import libraries
 import numpy as np
 import os
 import matplotlib.pyplot as plt
@@ -17,7 +19,7 @@ Myr=3.14e13
 kyr=3.14e10
 yr=3.14e7       #year in seconds
 cii=12.8e5      #ionised gas sound speed in cm/s
-mu=0.5
+mu=0.5          #mean particle mass in ionised hydrogen gas
 mH=1.67e-24     #hydrogen mass in grams
 
 
@@ -67,13 +69,13 @@ MdotArray=[]
 rhoGlob= Mglob*3./4./pi/Rglob**3
 firstTime=False
 
-twoPhase = False
+
 
 #evolve the cloud over time
 while t < tend:
-    #see Reiter et al. 2020MNRAS.497.3351R
     #unattenuated ionising flux
     Fo = StellarNly/4.0/pi/distance**2
+
     #mass loss rate (from Mellema et al. 2008)
     Fprime = Fo / (1.0+ (alphaB*Fo*Rglob/3.0/cii**2))**0.5
     Mdot=-Fprime*mu*mH*pi*(pi*Rglob/2.0)**2
@@ -82,23 +84,21 @@ while t < tend:
     Mlast=Mglob
     Mglob=Mlast+(Mdot*dt)
 
+    #check if the globule has been almost completely dispersed
+    if Mglob <= 0.001*iniMglob:
+        print("Globule fully photoevaporated at t = %.3f Myr" % (t/Myr))
+        break
+
+    #update globule bulk velocity
     Rdotlast=Rdot
-#    Rdot = (Rdot - dM*(dRdot-cii))/Mglob
-    Rdot = Rdot - ((dt *  Mdot * (Rdot -- cii))/Mglob)
+    Rdot = Rdot - ((dt *  Mdot *  cii)/Mglob)
+
     #move the cloud
     distance = distance + dt*(Rdot)
 
+    #update the globule radius
     Rlast=Rglob
-    #can have two phase collapse if desired (see Reiter + )
-    if(twoPhase): 
-        if(t < 0.3*Myr):
-            Rglob = iniRglob*(Mglob/iniMglob)**(3.)
-            r_RDI = Rglob
-            rhoGlob = Mglob*3./4./pi/Rglob**3
-        else:
-            Rglob = (Mglob *3./4./pi/rhoGlob)**(1./3.)
-    else:
-        Rglob = (Mglob *3./4./pi/rhoGlob)**(1./3.)
+    Rglob = (Mglob *3./4./pi/rhoGlob)**(1./3.)
     step=step+1
     #append the results to an array that will be plotted every 100 time steps
     if(step%100):
@@ -106,62 +106,27 @@ while t < tend:
         MdotArray.append(-Mdot*yr/msol)
         velArray.append(Rdot/1.e5)
         distArray.append(distance/pc)
-#        Rarray.append(Rglob/au/1.e3)
         Rarray.append(Rglob/pc)        
         Marray.append(Mglob/msol)
     t = t + dt
 
-
-#Plot the evolution of various globule properties 
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.xlabel("Time, Myr", fontsize=16)
-plt.ylabel("Globule mass loss rate, log$_{10}M_\odot\,yr^{-1}$", fontsize=16)
-plt.plot(tArray[:], np.log10(MdotArray[:]), linewidth = 3, label="model")
-plt.legend()
-plt.savefig("Mdot_2part.pdf")
+#Plot the evolution of various globule properties in one figure
+fig, axs = plt.subplots(2, 3, figsize=(14, 8), sharex=True)
+panels = [
+    (axs[0,0], np.log10(MdotArray), r"Mass loss rate, log$_{10}(M_\odot\,{\rm yr}^{-1})$"),
+    (axs[0,1], velArray,  "Velocity, km/s"),
+    (axs[0,2], distArray, "Distance from UV source, pc"),
+    (axs[1,0], Marray,    r"Mass, $M_\odot$"),
+    (axs[1,1], Rarray,    "Radius, pc"),
+]
+for ax, y, label in panels:
+    ax.plot(tArray, y, linewidth=2)
+    ax.set_ylabel(label, fontsize=13)
+    ax.tick_params(labelsize=11)
+for ax in (axs[1,0], axs[1,1], axs[0,2]):
+    ax.set_xlabel("Time, Myr", fontsize=13)
+axs[0,2].xaxis.set_tick_params(labelbottom=True)
+axs[1,2].axis("off")   #hide the unused sixth panel
+fig.tight_layout()
+fig.savefig("GlobuleEvolution.pdf")
 plt.show()
-
-
-
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.xlabel("Time, Myr", fontsize=16)
-plt.ylabel("Globule velocity, km/s", fontsize=16)
-plt.plot(tArray[:], velArray[:], linewidth = 3, label="model")
-plt.legend()
-plt.savefig("velocity_2part.pdf")
-plt.show()
-
-
-plt.ylim(0,10)
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.xlabel("Time, Myr", fontsize=16)
-plt.ylabel("Globule distance from UV source, pc", fontsize=16)
-plt.plot(tArray[:], distArray[:], linewidth = 3, label="model")
-plt.legend()
-plt.savefig("position_2part.pdf")
-plt.show()
-
-
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.xlabel("Time, Myr", fontsize=16)
-plt.ylabel("Globule Mass, $M_\odot$", fontsize=16)
-plt.plot(tArray[:], Marray[:], linewidth = 3, label="model")
-plt.legend()
-plt.savefig("Mass_2part.pdf")
-plt.show()
-
-
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.xlabel("Time, Myr", fontsize=16)
-plt.ylabel("Globule Radius, pc", fontsize=16)
-plt.plot(tArray[:], Rarray[:], linewidth = 3, label="model")
-plt.legend()
-plt.savefig("Radius_2part.pdf")
-plt.show()
-
-

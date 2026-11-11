@@ -1,13 +1,15 @@
+#
+# Script 2-1 for the textbook "Foundations of Radiative Transfer & Astrochemistry"
+# This simple script explores the how the medium properties and wavelength of observation affect the brightness of a background star.  
+#
+#
 
 
-#                                                                                                                                               
-# Libraries -- don't worry about this, it just gives us ready made tools for things like plotting                                               
-#                                                                                                                                               
-
-import numpy as np                         # a bunch of useful stuff                                                                            
+#Load some useful libraries
+import numpy as np                         # numpy has a bunch of useful features, e.g. here we use it for file i/o and mathematics functions
 import matplotlib.pyplot as plt            # plotting                                                                                           
 from scipy.interpolate import interp1d     # for interpolation                                                                                  
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Slider      # this script includes a slider for easy interactive changing of values
 
 #                                                                                                                                               
 # Here you can specify your input values                                                                                                        
@@ -22,7 +24,7 @@ lambdaObs = 1.0
 CloudThickness = 10.0
 
 #Density of cloud (hydrogen atoms per cubic metre)                                                                                              
-CloudDensity = 1.e10
+CloudDensity = 1.e9
 
 
 #                                                                                                                                               
@@ -68,7 +70,7 @@ lamMin = np.log10(0.01)
 lamMax = np.log10(1000.)
 rhoMin = 5.0
 rhoMax= 14.0
-rho0=10.0
+rho0=9.0
 delta_rho=0.1
 delta_lam=0.01
 
@@ -77,20 +79,20 @@ cloudMax=20.0
 delta_cloud=0.5
 cloud0=10.0
 
-slam = Slider(axlam, 'log$_{10}$(Wavelength), $\mu$m', lamMin, lamMax, valinit=lam0, valstep=delta_lam)
-srho = Slider(axrho, 'log$_{10}$(Density), kgm$^{-3}$', rhoMin, rhoMax, valinit=rho0, valstep=delta_rho)
+slam = Slider(axlam, r'log$_{10}$(Wavelength), $\mu$m', lamMin, lamMax, valinit=lam0, valstep=delta_lam)
+srho = Slider(axrho, r'log$_{10}$(Density), kgm$^{-3}$', rhoMin, rhoMax, valinit=rho0, valstep=delta_rho)
 ssize = Slider(axsize, 'Cloud Thickness, pc', cloudMin, cloudMax, valinit=cloud0, valstep=delta_cloud)
 
 
 lamString="{:.2f}".format(lambdaObs)
 TitleString= "wavelength="+lamString+"microns"
-lamlabel=plt.text(15., 8., TitleString)
+lamlabel=ax2.text(15., 800., TitleString)
 tauString="{:.2f}".format(tau)
 TauString= "\u03C4="+tauString
-taulabel=plt.text(15., 6., TauString)
+taulabel=ax2.text(15., 880, TauString)
 ax1.loglog(opacityData[:,0], opacityData[:,2])           #plot the opacity data                                                                 
 op=ax1.scatter(lambdaObs, kappa, color="black", s=100)    #plot the point we have chosen                                                        
-ax1.set_ylabel("Opacity $\kappa$, m$^2$kg$^{-1}$", fontsize=16)
+ax1.set_ylabel(r"Opacity $\kappa$, m$^2$kg$^{-1}$", fontsize=16)
 ax1.set_xlabel("Wavelength, microns", fontsize=16)
 ax2.set_xlim(1,986)
 ax2.set_ylim(708,1)
