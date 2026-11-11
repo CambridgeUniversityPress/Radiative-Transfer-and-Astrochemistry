@@ -63,7 +63,7 @@ for i in range(0,80):
 lineProf[:]=lineProf[:]/max(lineProf[:])
 ax2.set_ylim(0.25, 1.1)    
 ax2.set_xlim(-4.9, 4.9)    
-ax2.set_xlabel("velocity, km/s")
+ax2.set_xlabel("Velocity, km/s")
 ax2.set_ylabel("Normalised intensity")
 ax2.plot(vel, lineProf)
 

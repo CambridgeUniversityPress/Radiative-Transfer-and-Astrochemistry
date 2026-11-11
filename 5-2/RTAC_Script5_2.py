@@ -45,10 +45,10 @@ planetD0=1.0
 Tplanet = starT0*(Rstar/2.0/planetD0/autom)**(0.5)*(1.0-Alpha0)**(0.25)
 
 
-#Inner edge of habitable zone, where T=0 degrees centrigrade (373.15K)
+#Inner edge of habitable zone, where T=1000 degrees centrigrade (373.15K)
 DistIn=0.5*Rstar/(((373.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
 
-#Outer edge of habitable zone, where T=100 degrees centigrade (273.15K)
+#Outer edge of habitable zone, where T=0 degrees centigrade (273.15K)
 DistOut=0.5*Rstar/(((273.15/starT0)**4/(1.0-Alpha0))**0.5)/autom
 
 n, radii = 100, [DistIn, DistOut]
